@@ -1,10 +1,6 @@
 # Project Description
 
-This is a boilerplate code for the java based implementation of parking lot
-problem statement described below.
-
-This code will be given to a candidate coming for an onsite interview so that
-they can take the implementation forward.
+This is a java based implementation of parking lot.
 
 ## Requirements
 
@@ -99,9 +95,6 @@ of input - we don't want two distinct submissions.
 
 - `create_parking_lot`
 - `park`
-
-## Commands to implement
-
 - `leave`
 - `registration_numbers_for_cars_with_colour`
 - `slot_numbers_for_cars_with_colour`
@@ -166,7 +159,7 @@ $ exit
 
 ## Batch mode test
 
-To run the code so it accepts input from a file:
+To run the code, it accepts input from a file:
 
 ```
 $ bin/parking_lot file_inputs.txt
