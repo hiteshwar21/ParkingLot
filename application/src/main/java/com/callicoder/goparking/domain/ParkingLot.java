@@ -2,8 +2,9 @@ package com.callicoder.goparking.domain;
 
 import com.callicoder.goparking.exceptions.ParkingLotFullException;
 import com.callicoder.goparking.exceptions.SlotNotFoundException;
+import com.callicoder.goparking.exceptions.SlotNotOccupiedException;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ParkingLot {
 
@@ -51,9 +52,46 @@ public class ParkingLot {
         );
     }
 
+    public boolean isDuplicateVehicle(Car car){
+        for (ParkingSlot slot : occupiedSlots) {
+            if (slot.getCar().equals(car)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ParkingSlot leaveSlot(int slotNumber) {
         //TODO: implement leave
-        return null;
+        if (slotNumber < 1 || slotNumber > numSlots) {
+            throw new SlotNotFoundException(slotNumber);
+        }
+
+        ParkingSlot slotToFree = new ParkingSlot(slotNumber, 1);
+
+        if (!occupiedSlots.contains(slotToFree)) {
+            throw new SlotNotOccupiedException(slotNumber);
+        }
+
+        // Find the occupied slot in the occupiedSlots set
+        ParkingSlot occupiedSlot = null;
+        for (ParkingSlot slot : occupiedSlots) {
+            if (slot.equals(slotToFree)) {
+                occupiedSlot = slot;
+                break;
+            }
+        }
+
+        if (occupiedSlot == null) {
+            throw new IllegalStateException("Internal error: Occupied slot not found");
+        }
+
+        occupiedSlot.clear();
+
+        // Update the sets
+        occupiedSlots.remove(occupiedSlot);
+        availableSlots.add(occupiedSlot);
+        return occupiedSlot;
     }
 
     public boolean isFull() {
@@ -62,19 +100,33 @@ public class ParkingLot {
 
     public List<String> getRegistrationNumbersByColor(String color) {
         //TODO: implement getRegistrationNumbersByColor
-        return null;
+        List<String> registrationNumbers = new ArrayList<>();
+        for (ParkingSlot slot : occupiedSlots) {
+            if (!slot.isAvailable() && slot.getCar().getColor().equalsIgnoreCase(color)) {
+                registrationNumbers.add(slot.getCar().getRegistrationNumber());
+            }
+        }
+        return registrationNumbers;
     }
 
     public List<Integer> getSlotNumbersByColor(String color) {
         //TODO: implement getSlotNumbersByColor
-        return null;
+        List<Integer> slotNumbers = new ArrayList<>();
+        for (ParkingSlot slot : occupiedSlots) {
+            if (!slot.isAvailable() && slot.getCar().getColor().equalsIgnoreCase(color)) {
+                slotNumbers.add(slot.getSlotNumber());
+            }
+        }
+        return slotNumbers;
     }
 
-    public Optional<Integer> getSlotNumberByRegistrationNumber(
-        String registrationNumber
-    ) {
-        //TODO: implement getSlotNumberByRegistrationNumber
-        return null;
+    public Optional<Integer> getSlotNumberByRegistrationNumber(String registrationNumber) {
+        for (ParkingSlot slot : occupiedSlots) {
+            if (!slot.isAvailable() && slot.getCar().getRegistrationNumber().equalsIgnoreCase(registrationNumber)) {
+                return Optional.of(slot.getSlotNumber());
+            }
+        }
+        return Optional.empty();
     }
 
     public int getNumSlots() {
