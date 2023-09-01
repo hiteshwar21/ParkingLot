@@ -8,10 +8,12 @@ public interface MessageConstants {
     String PARKING_LOT_CREATED_MSG = "Created a parking lot with %s slots";
     String PARKING_SLOT_ALLOCATED_MSG = "Allocated slot number: %s";
     String PARKING_LOT_FULL_MSG = "Sorry, parking lot is full";
+    String PARKING_LOT_EMPTIED = "Parking Slot number : %s emptied";
 
     String SLOT_NO = "Slot No.";
     String REGISTRATION_NO = "Registration No";
     String Color = "Colour";
     String DUPLICATE_VEHICLE_MESSAGE =
         "A car already parked with this registration number";
+    String CAR_NOT_PRESENT = "No car present with this ";
 }

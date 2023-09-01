@@ -22,6 +22,10 @@ public class CommandFactoryTests {
         );
         assertTrue(commandFactory.getCommands().keySet().contains("park"));
         assertTrue(commandFactory.getCommands().keySet().contains("status"));
+        assertTrue(commandFactory.getCommands().keySet().contains("leave"));
+        assertTrue(commandFactory.getCommands().keySet().contains("registration_numbers_for_cars_with_colour"));
+        assertTrue(commandFactory.getCommands().keySet().contains("slot_numbers_for_cars_with_colour"));
+        assertTrue(commandFactory.getCommands().keySet().contains("slot_number_for_registration_number"));
     }
 
     @Test

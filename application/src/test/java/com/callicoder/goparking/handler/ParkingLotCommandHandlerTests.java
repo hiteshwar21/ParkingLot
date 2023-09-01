@@ -1,8 +1,7 @@
 package com.callicoder.goparking.handler;
 
 import static com.callicoder.goparking.utils.MessageConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -94,7 +93,7 @@ public class ParkingLotCommandHandlerTests {
     public void testParkDuplicateVehicle() {
         ParkingLotCommandHandler parkingLotCommandHandler = new ParkingLotCommandHandler();
         parkingLotCommandHandler.createParkingLot(6);
-        assertTrue(
+        assertFalse(
             outContent
                 .toString()
                 .endsWith(PARKING_LOT_ALREADY_CREATED + System.lineSeparator())
@@ -111,6 +110,66 @@ public class ParkingLotCommandHandlerTests {
             outContent
                 .toString()
                 .endsWith(DUPLICATE_VEHICLE_MESSAGE + System.lineSeparator())
+        );
+    }
+
+    @Test
+    public void testWithNoParkingLotForLeave(){
+        ParkingLotCommandHandler parkingLotCommandHandler = new ParkingLotCommandHandler();
+        parkingLotCommandHandler.leave(4);
+        assertTrue(
+                outContent
+                        .toString()
+                        .endsWith(PARKING_LOT_NOT_CREATED + System.lineSeparator())
+        );
+    }
+
+
+    @Test
+    public void testWithValidSlotForLeave(){
+        ParkingLotCommandHandler parkingLotCommandHandler = new ParkingLotCommandHandler();
+        parkingLotCommandHandler.createParkingLot(1);
+        parkingLotCommandHandler.park("KA-01-HH-3141", "White");
+        parkingLotCommandHandler.leave(1);
+
+        assertEquals(
+                String.format(PARKING_LOT_CREATED_MSG, 1) +
+                        System.lineSeparator() +
+                        String.format(PARKING_SLOT_ALLOCATED_MSG, 1) +
+                        System.lineSeparator() +
+                "Parking Slot number : 1 emptied" + System.lineSeparator(),
+                outContent.toString()
+        );
+    }
+
+    @Test
+    public void testWithInvalidSlotForLeave(){
+        ParkingLotCommandHandler parkingLotCommandHandler = new ParkingLotCommandHandler();
+        parkingLotCommandHandler.createParkingLot(1);
+        parkingLotCommandHandler.park("KA-01-HH-3141", "White");
+        parkingLotCommandHandler.leave(3);
+
+        assertEquals(
+                String.format(PARKING_LOT_CREATED_MSG, 1) +
+                        System.lineSeparator() +
+                        String.format(PARKING_SLOT_ALLOCATED_MSG, 1) +
+                        System.lineSeparator() +
+                        "Slot number 3 not found!" + System.lineSeparator(),
+                outContent.toString()
+        );
+    }
+
+    @Test
+    public void testWithAlreadyEmptySlotForLeave(){
+        ParkingLotCommandHandler parkingLotCommandHandler = new ParkingLotCommandHandler();
+        parkingLotCommandHandler.createParkingLot(2);
+        parkingLotCommandHandler.leave(1);
+
+        assertEquals(
+                String.format(PARKING_LOT_CREATED_MSG, 2) +
+                        System.lineSeparator() +
+                        "Slot number 1 is not occupied!" + System.lineSeparator(),
+                outContent.toString()
         );
     }
 
